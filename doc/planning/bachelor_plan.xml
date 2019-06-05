@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Bachelor thesis - ml4nr" company="HEIA-FR - LBNL" webLink="http://" view-date="2019-06-24" view-index="0" gantt-divider-location="595" resource-divider-location="300" version="2.8.9" locale="en">
+    <description><![CDATA[Bachelor thesis schedule]]></description>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Name" width="372" order="0"/>
+        <field id="tpd4" name="Begin date" width="98" order="1"/>
+        <field id="tpd5" name="End date" width="106" order="2"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars base-id="none">
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+        <date year="2019" month="5" date="23" type="HOLIDAY"/>
+        <date year="2019" month="5" date="27" type="HOLIDAY"/>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="Prototype 0  : KERAS validation" color="#000000" meeting="false" start="2019-05-28" duration="8" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <task id="8" name="Familiarize with KERAS and TensorFlow" color="#8cb6ce" meeting="false" start="2019-05-28" duration="2" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+                <depend id="10" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="10" name="Analyze layer types" color="#8cb6ce" meeting="false" start="2019-05-30" duration="2" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+                <depend id="11" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="11" name="Build own model" color="#8cb6ce" meeting="false" start="2019-06-03" duration="2" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+                <depend id="12" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="12" name="Train and test on MNIST dataset" color="#8cb6ce" meeting="false" start="2019-06-05" duration="2" complete="0" thirdDate="2019-06-05" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="3" name="Prototype 1 : Sound from clean sine grooves" color="#000000" meeting="false" start="2019-06-07" duration="9" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="7" type="2" difference="0" hardness="Strong"/>
+            <task id="15" name="Analyze SOTA of sound generation" color="#8cb6ce" meeting="false" start="2019-06-07" duration="2" complete="0" thirdDate="2019-06-07" thirdDate-constraint="0" expand="true">
+                <depend id="13" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="399" name="Milestone : Documentation of SOTA" color="#8cb6ce" meeting="true" start="2019-06-11" duration="0" complete="0" thirdDate="2019-06-07" thirdDate-constraint="0" expand="true"/>
+            <task id="13" name="Familiarize with Weaver" meeting="false" start="2019-06-11" duration="1" complete="0" expand="true">
+                <depend id="14" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="14" name="Generate dataset of sine grooves" meeting="false" start="2019-06-12" duration="1" complete="0" expand="true">
+                <depend id="16" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="16" name="Create or use model for sound generation from images" color="#8cb6ce" meeting="false" start="2019-06-13" duration="3" complete="0" thirdDate="2019-06-12" thirdDate-constraint="0" expand="true">
+                <depend id="17" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="17" name="Train and test model" color="#8cb6ce" meeting="false" start="2019-06-18" duration="2" complete="0" thirdDate="2019-06-17" thirdDate-constraint="0" expand="true"/>
+            <task id="403" name="Milestone : Documentation of prototype" color="#8cb6ce" meeting="true" start="2019-06-20" duration="0" complete="0" thirdDate="2019-06-07" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="7" name="Noisy sine groove plugin for Weaver" color="#000000" meeting="false" start="2019-06-20" duration="4" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="1" type="2" difference="0" hardness="Strong"/>
+            <task id="18" name="Familiarize with plugin code" meeting="false" start="2019-06-20" duration="1" complete="0" expand="true">
+                <depend id="19" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="19" name="Analyze structure and properties of noise" meeting="false" start="2019-06-21" duration="1" complete="0" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="20" name="Implement modified plugin to generate noisy grooves" color="#8cb6ce" meeting="false" start="2019-06-24" duration="2" complete="0" thirdDate="2019-06-24" thirdDate-constraint="0" expand="true"/>
+            <task id="406" name="Milestone : Document new plugin" color="#8cb6ce" meeting="true" start="2019-06-26" duration="0" complete="0" thirdDate="2019-06-20" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="1" name="Prototype 2 : Sound from noisy sine grooves" color="#000000" meeting="false" start="2019-06-26" duration="5" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="5" type="2" difference="0" hardness="Strong"/>
+            <task id="21" name="Generate datatset of noisy sine grooves" meeting="false" start="2019-06-26" duration="1" complete="0" expand="true">
+                <depend id="22" type="2" difference="0" hardness="Strong"/>
+                <depend id="23" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="22" name="Train and test previous model" color="#8cb6ce" meeting="false" start="2019-06-27" duration="4" complete="0" thirdDate="2019-06-27" thirdDate-constraint="0" expand="true"/>
+            <task id="23" name="Analyze SOTA and leads to improve model" color="#8cb6ce" meeting="false" start="2019-06-27" duration="4" complete="0" thirdDate="2019-06-28" thirdDate-constraint="0" expand="true"/>
+            <task id="409" name="Milestone : Document prototype" color="#8cb6ce" meeting="true" start="2019-07-03" duration="0" complete="0" thirdDate="2019-06-26" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="5" name="Prototype 3 : &quot;Noisy&quot; sound from discs images" color="#000000" meeting="false" start="2019-07-03" duration="6" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+            <task id="27" name="Obtain dataset of imaged discs and generated sound" meeting="false" start="2019-07-03" duration="1" complete="0" expand="true">
+                <depend id="28" type="2" difference="0" hardness="Strong"/>
+                <depend id="29" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="28" name="Train and test previous model" color="#8cb6ce" meeting="false" start="2019-07-04" duration="5" complete="0" thirdDate="2019-07-04" thirdDate-constraint="0" expand="true"/>
+            <task id="29" name="Improve with leads and SOTA" color="#8cb6ce" meeting="false" start="2019-07-04" duration="5" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true"/>
+            <task id="412" name="Milestone : Document prototype" color="#8cb6ce" meeting="true" start="2019-07-11" duration="0" complete="0" thirdDate="2019-07-03" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="2" name="Prototype 4 : &quot;Clean&quot; sound from discs images" color="#000000" meeting="false" start="2019-07-11" duration="7" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+            <task id="30" name="Obtain dataset of imaged discs and recorded sound" meeting="false" start="2019-07-11" duration="1" complete="0" expand="true">
+                <depend id="31" type="2" difference="0" hardness="Strong"/>
+                <depend id="32" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="31" name="Train and test previous model" color="#8cb6ce" meeting="false" start="2019-07-12" duration="5" complete="0" thirdDate="2019-07-12" thirdDate-constraint="0" expand="true"/>
+            <task id="32" name="Improve as much as possible" color="#8cb6ce" meeting="false" start="2019-07-12" duration="5" complete="0" thirdDate="2019-07-12" thirdDate-constraint="0" expand="true"/>
+            <task id="415" name="Milestone : Document prototype" color="#8cb6ce" meeting="true" start="2019-07-22" duration="0" complete="0" thirdDate="2019-07-11" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="6" name="Integration to Weaver" color="#000000" meeting="false" start="2019-07-22" duration="2" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true">
+            <task id="33" name="Adapt code, I/O, to integrate with Weaver" color="#8cb6ce" meeting="false" start="2019-07-22" duration="2" complete="0" thirdDate="2019-07-19" thirdDate-constraint="0" expand="true"/>
+            <task id="420" name="Milestone : Document how to use" color="#8cb6ce" meeting="true" start="2019-07-24" duration="0" complete="0" thirdDate="2019-07-22" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="34" name="Documentation, continuous report writting, meetings" color="#8cb6ce" meeting="false" start="2019-05-20" duration="58" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" expand="true"/>
+        <task id="9" name="Final report" color="#8cb6ce" meeting="true" start="2019-08-09" duration="0" complete="0" thirdDate="2019-05-30" thirdDate-constraint="0" priority="4" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
