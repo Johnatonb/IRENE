@@ -20,6 +20,8 @@
 \usepackage{rotating}
 \usepackage[strings]{underscore}
 \usepackage[nottoc,numbib]{tocbibind}
+\usepackage{float}
+\restylefloat{table}
 
 \graphicspath{ {images/} }
 
@@ -362,16 +364,16 @@ Here is what a generated groove looks like :
 The first idea is to generate randomized grooves so model inputs are as diverse as possible. However, the audio file generated from a random groove can sometimes be wrong. The algorithm used by Weaver plugins needs initial values close to the actual ones, and it's quite complicated with a random dataset. Furthermore, even the "correct" audio files contain some high frequency noise, due to the algorithm imperfection. We decide to generate the audio data from the code and not Weaver for this prototype.
 
 The groove and image properties are fixed, for an easier manipulation of data for training. Only the frequency is randomized.
-\begin{table}[]
-	\begin{tabular}{lllll}
-		& Value      &  &  &  \\
-		Width        & 204        &  &  &  \\
-		Height       & 80'000     &  &  &  \\
-		Frequency    & 20 - 5'000 &  &  &  \\
-		Amplitude    & 10         &  &  &  \\
-		Edge width   & 3          &  &  &  \\
-		Groove width & 160        &  &  &  \\
-		Bottom width & 12         &  &  & 
+\begin{table}[H]
+	\begin{tabular}{|r|l|lll}
+		\cline{1-2}
+		Width        & 204        &  &  &  \\ \cline{1-2}
+		Height       & 80'000     &  &  &  \\ \cline{1-2}
+		Frequency    & 20 - 5'000 &  &  &  \\ \cline{1-2}
+		Amplitude    & 10         &  &  &  \\ \cline{1-2}
+		Edge width   & 3          &  &  &  \\ \cline{1-2}
+		Groove width & 160        &  &  &  \\ \cline{1-2}
+		Bottom width & 12         &  &  &  \\ \cline{1-2}
 	\end{tabular}
 \end{table}
 
