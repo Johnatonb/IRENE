@@ -26,8 +26,8 @@
 \newcommand{\helv}{\fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont}
 
 %--------------- Variables à modifier à chaque rendu ---------------
-\title{Specifications}
-\newcommand{\daterendu}{05/31/2019}
+\title{Report}
+\newcommand{\daterendu}{07/11/2019}
 %-------------------------------------------------------------------
 
 \makeatletter\let\Title\@title\makeatother
@@ -68,58 +68,121 @@
 \fancyfoot[RO, LE]{\helv \textbf{Page \thepage{}/\pageref{LastPage}}}
 \pagenumbering{arabic}
 \setcounter{page}{1}
+\begin{abstract}
+	Sample text.
+\end{abstract}
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+	Sample text.
+\end{abstract}
+
 \section{Introduction}
-This document specifies the context and objectives of the Bachelor project "Machine learning for noise reduction in images of old audio records". This project is done under the supervision of Mr. Carl Haber at the Lawrence Berkeley National Laboratory, and supervised by Messrs. Frédéric Bapst and Jean Hennebert at the University of Applied Science of Fribourg.
+This document is the final report of the Bachelor project "Machine learning for noise reduction in images of old audio records". It contains all information regarding the project, from the context to the details of implementation. This project is done under the supervision of Mr. Carl Haber at the Lawrence Berkeley National Laboratory, and supervised by Messrs. Frédéric Bapst and Jean Hennebert at the University of Applied Science of Fribourg.
+
+"Machine learning for noise reduction in images of old audio records" (ML4NR) is a project proposed by Mr. Carl Haber at the Lawrence Berkeley National Laboratory (LBNL). It is part of a project for the Library of Congress, whose goal is the restoration and preservation of old audio records.
+ML4NR is done as a Bachelor Thesis project by Mr. Benoît Ruffray
+\subsection{Report organization}
+This report starts with an explanation of the context regarding audio records, IRENE/Weaver, and machine learning. It continues by detailing the objectives of the project and the tasks planning. Then, each major step is explained in its own section, from the analysis to the testing. Finally, the conclusion and personal review resumes it all.
+\subsection{Folder organization}
+The project folder contains a \texttt{doc} folder and a \texttt{README} file. The \texttt{doc} folder contains the following elements:
+\begin{description}
+	\item[data] This folder contains everything regarding the properties of the data used and the system's architecture.
+	\item[images] This folder contains the images used for the different documents.
+	\item[planning] This folder contains the files used for Gantt planning.
+	\item[pv] This folder contains all the meeting minutes.
+	\item[report] This folder contains the report document.
+	\item[specifications] This folder contains the specification document.
+\end{description}
+%add folder for keras code
+The code developed for Weaver is only available on its GitHub repository. The disc images and music can be found in the Google Drive folder, as they take a lot of space.
 \section{Context}
-"Machine learning for noise reduction in images of old audio records" (ML4NR) is a project proposed by Mr. Carl Haber at the Lawrence Berkeley National Laboratory (LBNL). It is part of a project for the Library of Congress, whose goal is the restoration and conservation of old audio records.
-ML4NR is done as a Bachelor Thesis project by Mr. Benoît Ruffray.
 \subsection{Mechanical Audio records}
 The first device able to record and play back sound waves was an invention of Thomas Edison in 1877, the cylinder phonograph\cite{audio}. This device could record sounds by making a needle vibrate and carve a groove on a rotating tinfoil or wax cylinder. To play it back, the cylinder was rotated, making the needle vibrate while following the groove. This vibration is amplified and produces audible sound waves, the ones recorded.
 
-Since cylinders were impractical to store and quick to be damaged (the physical contact would wear out the groove after each play), Emile Berliner improved the concept in 1887 by inventing a flat support for audio recording, discs. Those were easier to stack and reproduce, and so quickly overtook the market. The associated device is the gramophone.
+Since cylinders were impractical to store and quick to be damaged (the physical contact would wear the groove out during each play), Emile Berliner improved the concept in 1887 by inventing a flat support for audio recording: discs. Those were easier to stack and reproduce, and therefore quickly overtook the market. The associated reading device is the gramophone.
 
-The standard format from the 1910s to 1950s was a double-sided 78 rpm shellac disc. However, shellac is a brittle material, and the hard needles would wear them out quickly. It's in 1948 that Columbia Records invented the 33 rpm vinyl disc. Vinyl is more expensive but sturdier than shellac, and the longer playtime would compensate for the extra cost. RCA Victor introduced the 45 rpm, smaller vinyl disc in 1949, effectively cutting the cost by using less material. Both formats replaced the shellac disc.
+The standard format from the 1910s to 1950s was a double-sided 78 rpm shellac disc. However, shellac is a brittle material, and the hard needles would wear them out quickly. It's in 1948 that Columbia Records invented the 33 rpm vinyl disc. Vinyl is more expensive but sturdier than shellac, and the longer playtime would compensate for the extra cost. RCA Victor introduced the 45 rpm, smaller vinyl disc, in 1949, effectively cutting the cost by using less material. Both formats replaced the shellac disc.
 
-The Library of Congress is interested in the conservation of these old records, as they contain valuable historical audio data such as presidential speeches, native American interviews, or traditional songs from the past. However, since the cylinders and shellac discs are getting destroyed with each play, they associated with the LBNL to find a way to extract and preserve all data without physical contact (non invasive play back). They came up with the IRENE system.
-\subsection{IRENE and Weaver}
-IRENE is a system that can image any kind of engraved support using high definition cameras. One picture is a really thin line across the entire support, and a lot of them are taken while the record is moved.
+The Library of Congress is interested in the preservation of these old records, as they contain valuable historical audio data such as presidential speeches, native American interviews, or traditional songs from the past. However, since the cylinders and shellac discs are getting destroyed with each play, they associated with the LBNL to find a way to extract and preserve all data without physical contact (non invasive play back). This collaboration gave birth to IRENE.
+\subsection{IRENE}
+Stands for Image, Reconstruct, Erase Noise, Etc.
+IRENE is a scanning machine used to image discs and cylinders. It's composed of high-resolution 2D/3D cameras and rotating supports for the records.
 
-It shines light in a certain direction towards the record to obtain a black and white picture: the white part is the light reflected to the camera, the black part isn't. For shellac discs, white parts are flat, black ones are inclined. This helps finding the groove, as its bottom is flat.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.5\textwidth]{grooveside.png}
-	\caption{Camera lighting the groove and detecting direct reflection}
+	\includegraphics[width=0.5\textwidth]{../images/IRENE.jpg}
+	\caption{IRENE (Source : lab's collection)}
+	\label{irene}
+\end{figure}
+
+The 2D camera takes pictures of one line on the disc, 1 pixel high for thousands of pixels long. The pictures are taken at a very high frequency while the record is turning, imaging the disc line by line. The actual frequency is tuned for the support imaged.
+
+To take pictures, light is directed with a certain angle on the disc. The sensors are activated by the reflected light, and write the perceived amount. Direct reflection results in white pixels, no light reflected becomes black, and in between are the gray scales.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/grooveside.png}
+	\caption{Camera lighting the groove and detecting direct reflection (self-made diagram)}
 	\label{grooveside}
 \end{figure}
+The grooves are usually made of large white bands outside (the disc surface), black bands inside (the groove's "walls"), and a thin white in the middle (bottom of the groove). Between these bands, there is a small area of gray scaled pixels.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.5\textwidth]{groove.png}
-	\caption{Resulting image of grooves}
+	\includegraphics[width=0.5\textwidth]{../images/groove.png}
+	\caption{Resulting image of grooves (source : lab's collection)}
 	\label{groove}
 \end{figure}
-Any kind of damage or unwanted object on the disc can be seen, as it disturbs direct reflection. It is considered as noise on the image. A shellac disc imaged entirely takes multiple gigabytes of space.
+Any kind of damage, texture, or unwanted object on the disc can be seen, as it disturbs light reflection. It is considered as noise on the image, and the reason the ML4NR project exists.
+\subsection{Weaver}
+Along with the IRENE system exists a program named Weaver, made in C\#. It is a collection of plugins developed through the years by researchers and students, used to pipeline the data reading process. 
 
-Along with this system exists a program named Weaver, made in C\#. It is a collection of plugin developed through the years by researchers and students, and is used to pipeline the data reading process. Weaver's main function is to generate the sound wave from the imaged grooves, using an edge detection algorithm to find the exact center of the groove. However, since the images are noisy (dust, damage), the sound generated also contains a high frequency background noise. Simply cutting the high frequencies wouldn't completely work, as the noise in images can also influence lower frequencies.
-\subsection{Machine learning}
-Machine learning is a powerful computing technique used for handling problems having too much features for a deterministic algorithm. For example, object detection and classification in pictures or market predictions.
+Weaver's main function is to generate the sound wave from the imaged grooves, using an edge detection algorithm to find the exact center of the groove (figure \ref{edges}). However, since the images are noisy (dust, damage, texture), the sound generated also contains a high frequency background noise. Simply cutting the high frequencies wouldn't completely work, as the noise in images can also influence lower frequencies.
 
-It is based on multiple layers of neurons. Each layer takes some data as input, does some transformation, and feeds the output to the next layer. By setting a goal (ground-truth), it can evaluate its result, and change slightly the transformations occurring in all layers (weight adjustment). It repeats this process over and over until satisfied.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/edges.png}
+	\caption{Detected edges. Averaging them gives the center of the groove. (Source : lab's collection)}
+	\label{edges}
+\end{figure}
+\subsection{Machine learning and deep neural networks}
+Machine learning is a powerful computing technique used for handling problems having too much parameters for a deterministic algorithm, for example object detection and classification in pictures, or market predictions. It is based on the ability to learn from given correct solutions in order to predict results of future inputs.
+
+Deep neural network is a type of model inspired by the human brain. It is based on multiple layers of neurons. Each neuron takes some data as input, does some transformation, and feeds the output to the next neuron layer. By setting a goal (ground-truth), it can evaluate its result using a loss function, and change slightly the transformations occurring in all layers (weight adjustment). It repeats this process over and over until a threshold is passed.
+\subsection{Shellac disc images properties}
+This project is aimed at shellac discs, detailed in section \texttt{Mechanical Audio Records}. The LBNL has already imaged a lot of them, and so possesses a consequent collection of groove images.
+
+The shellac discs were imaged at 104 KHz by IRENE, resulting in exactly 80,000 pixels for one revolution. However, those revolutions were divided in 8 parts of 10,000 pixels each. 
+
+IRENE's 2D camera horizontal resolution is 4096 pixels. To obtain a good image quality, it was calibrated to take 3 microns per pixel. This means between 9 and 11 grooves are taken at the same time, and 15 to 30 revolutions are needed to image the entire disc.
+
+So, each shellac disc is imaged with 8 x (15 to 30) pictures of 10,000 x 4096 pixels. All these pictures are in bitmap format and in gray scale.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{../images/Vaya-52212c.png}
+	\caption{One image of the shellac disc of Vaya Con Dios, by Les Paul and Mary Ford (source : lab's collection)}
+	\label{vaya}
+\end{figure}
+\subsection{Audio data}
+For some of the shellac discs, the LBNL possesses the audio source used to press them, coming from a CD or a tape. This gives us a clear reference on what the play back should sounds like. They were typically recorded at 44 KHz.
+
+For the other discs, the audio reconstructed by Weaver can still serve as a good goal for the machine learning model. 
+
 \section{Objectives}
-The main goal of the ML4NR project is to generate a cleaner sound than the deterministic algorithm when given noisy groove images as input, using machine learning. Since it was never attempted before at the LBNL, the project is divided into steps, which correspond to working prototypes.
+The main goal of the ML4NR project is to generate a cleaner sound than the deterministic algorithm when given noisy groove images as input by using machine learning. It was never attempted before at the LBNL. The project is divided into progressive steps, which correspond to working prototypes.
 \subsection{Prototype 0}
-This prototype serves as training for using KERAS. It'll teach the basics of model building. It's goal is to have a result on the MNIST dataset (not necessarily good). 
+This prototype serves as training for using KERAS. It'll teach the basics of model building. Its goal is to have a result on the CIFAR-10 dataset (not necessarily good). 
 \subsection{Prototype 1}
 This prototype is a proof of concept. Using Weaver, groove images of pure sine waves are generated. They are used to train a model, whose goal will be to find the simple frequency sound wave from the image. A metric needs to be defined for result evaluation.
 \subsection{Weaver Plugin}
-The Weaver plugin needs to be modified, in order for it to be able to generate noisy groove images. The artificial noise needs to have the same properties as the real one (in actual imaged grooves).
+The previously used Weaver plugin needs to be modified, in order for it to be able to generate noisy groove images. The artificial noise needs to have the same properties as the real one (in actual imaged grooves).
 \subsection{Prototype 2}
-This prototype tests the robustness of the model built before. It uses the noisy groove images generated with the Weaver plugin as input, and tries to find the clear sound wave. SOTA analysis helps improvement of the model.
+This prototype tests the robustness of the model built before. It uses the noisy groove images generated with the Weaver plugin as input, and tries to find the clear sound wave. State of the art (SOTA) analysis helps improve the model.
 \subsection{Prototype 3}
 This prototype checks if complex sound waves can be generated by the model. Actual images of discs are used as input, and the goal is to find the same sound that is generated using the deterministic algorithm. Maybe a "bad result" regarding the goal could be better than current results.
 \subsection{Prototype 4}
 Final prototype, it uses the actual images of the discs, and the corresponding clean sound as goal. The clean sound is either obtained from a recorded stylus play, of from the original audio tape (which was used to print the disc). The results of this prototype are the results of the project.
 
-If needed, this prototype is implemented as a plugin in Weaver.  
+If possible, this prototype is implemented as a plugin in Weaver.  
 \section{Tasks}
 \subsection{Prototype 0}
 \begin{description}
@@ -139,7 +202,7 @@ If needed, this prototype is implemented as a plugin in Weaver.
 	\item[Generate dataset of sine grooves] Use Weaver to generate a dataset of groove images whose base is a simple sine wave (one single frequency). The groove should be clean.
 	\item[Create or use model for sound generation from images] Based on the SOTA, create or use a model able to generate sound from groove images.
 	\item[Train and test model] Train the model with the dataset previously generated.  Use pure single frequency sound as ground-truth. Test with metric defined earlier. Improve the model and parameters to have better results.
-	\item[Documentation of prototype] Document everything about the prototype, from researches to code comments.
+	\item[Documentation of prototype] Document everything about the prototype.
 \end{description}
 \subsection{Weaver Plugin}
 \begin{description}
@@ -155,7 +218,7 @@ If needed, this prototype is implemented as a plugin in Weaver.
 	\item[Generate dataset of noisy sine grooves] Use previously implemented plugin to generate a dataset of images with grooves of simple sine waves, but noisy.
 	\item[Train and test previous model] Try to train previous model with noisy images, and see what it can do. Use pure single frequency sound as ground-truth (not noisy sound). Use the metrics defined.
 	\item[Analyze SOTA and leads to improve model] Use SOTA documentation and leads from workshops to improve the model and the results, regarding the metrics.
-	\item[Document prototype] Document everything about the prototype, from researches to code comments.
+	\item[Document prototype] Document everything about the prototype.
 \end{description}
 \subsection{Prototype 3}
 \begin{description}
@@ -163,7 +226,7 @@ If needed, this prototype is implemented as a plugin in Weaver.
 	\item[Obtain dataset of imaged discs and generated sound] Obtain dataset of actual noisy grooves, imaged by IRENE, and their corresponding sound generated with Weaver.
 	\item[Train and test previous model] Use model made for simple frequencies and test results. See if it can find the actual sound. The ground-truth is the noisy sound generated by Weaver.
 	\item[Improve model with leads and SOTA] Check documentation and leads, improve model and parameters until it obtains a good result regarding the metrics.
-	\item[Document prototype] Document everything about the prototype, from researches to code comments. 
+	\item[Document prototype] Document everything about the prototype.
 \end{description}
 \subsection{Prototype 4}
 \begin{description}
@@ -171,7 +234,7 @@ If needed, this prototype is implemented as a plugin in Weaver.
     \item[Obtain dataset of imaged discs and recorded sound] Obtain dataset of actual noisy grooves, imaged by IRENE, and their corresponding sound recorded when played with a stylus. The sound could also come from the original tape.
     \item[Train and test previous model] Use model made previously and test results. See if it can find the actual sound. The ground-truth is the clean sound obtained by stylus play or from the original tape.
     \item[Improve as much as possible] Check documentation and leads, improve model and parameters until it obtains a good result regarding the metrics.
-    \item[Document prototype] Document everything about the prototype, from researches to code comments. 
+    \item[Document prototype] Document everything about the prototype.
 \end{description}
 \subsection{Integration to Weaver}
 \begin{description}
@@ -179,11 +242,296 @@ If needed, this prototype is implemented as a plugin in Weaver.
 	\item[Adapt code, I/O, to integrate with Weaver] If necessary, find a way to implement the model in a Weaver plugin, so it can be used for pipelining.
 	\item[Document how to use] Document the plugin code and its usage.
 \end{description}
-\subsection{Documentation and administration}
-In addition to prototypes documentation, the final report should be written along the project. A work journal should be maintained regularly, and weekly meetings held with the supervisors. All decisions and discussions should be written in minutes. All written documents are shared with the supervisors and experts on the designated platform.
+\subsection{Planning}
+See end of document. The PDF version is in high quality and can be zoomed on.
+\subsection{Risks}
+If the sound generation form images doesn't give good results, the method can be changed. The new method would be to "denoise" the discs images or the reconstructed sound wave, using denoiser models of machine learning.
 
-\section{Planning}
-See end of document.
+\section{Prototype 0}
+This prototype's goal is to familiarize ourselves with Keras and TensorFlow, by implementing a simple model.
+\subsection{Keras and TensorFlow}
+TensorFlow is a Python and C API developed for machine learning\cite{tf}. It facilitates computation using flow graphs, and can be used on a GPU. Interconnected neuron layers are a flow graph.
+
+Keras is a high-level API that can use TensorFlow as a basis for machine learning and neural networks\cite{keras}. It makes it easier for developers to implement deep neural networks (DNN) by having layer types already ready to use with ways to organize them. It also offers a lot of data manipulation for pre- and post-processing.
+\subsection{CIFAR-10}
+CIFAR-10 is a public dataset widely used for machine learning training and evaluation\cite{cifar}. It consists of 60,000 color images belonging to 10 classes (animals and vehicles). The goal is to be able to find the right class for a given image.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/cifar.png}
+	\caption{Example of images in the CIFAR-10 Dataset (source : \cite{cifar})}
+	\label{cifar}
+\end{figure}
+\subsection{Convolutional Neural Networks}
+Following the tutorials proposed on Keras website, it seems convolutional neural networks (CNN) are a good way to start for image classification.
+
+It is based on the principle of scaling: some features are small and very specific, while other are big and generic. CNN uses convolution to reduce the image's dimension while taking every pixel into account. The weights give more or less importance to some scales and positions in the picture. 
+
+Putting multiple layers of convolutions completely interconnected let the model finds high-level information on the picture. Usually, in between layers there is an activation function, whose task is to put values in a certain range. 
+
+Multiple iterations of 3-4 convolution layers + activation layers, followed by a max pooling layer, and ending with some fully connected layers, is the suggested way for image classification in their tutorial.
+\subsection{Implementation and results}
+The model is constructed as follow : %change for picture of model
+\begin{itemize}
+	\item 2 repetitions of
+	\begin{itemize}
+		\item 3 repetitions of
+		\begin{itemize}
+			\item 1 convolution layer
+			\item 1 activation layer (RELU)
+		\end{itemize}
+		\item 1 Max pooling layer
+	\end{itemize}
+	\item 2 fully connected layers	
+\end{itemize}
+It obtains around 75\% of accuracy for classification. 
+\section{Prototype 1}
+This prototype will determine if it's possible to generate sound from an image. It's goal is to be able to find the sound wave of a simple sine groove.
+\subsection{SOTA machine learning models}
+Over the years, multiple types of layers and neural networks were invented, each for a specific task. In this project, the goal is to generate precisely a sound wave from a groove image. It needs to be able to find the amplitude of the sound at a certain point on the groove. The amplitude is given by the perpendicular velocity of the needle when following the groove, meaning it's not the absolute position that is important, but the change of position.
+
+Machine learning models generally try to find a solution for two types of problems : classification and regression.
+
+Classification can be done while knowing what classes are possible, or just trying to cluster inputs together. If used with images, they are usually small (28x28 to 128x128).
+
+Regression is the search of a continuous value given time based data points. It is usually used to predict future values.
+
+For classification, our problem (finding the amplitude at a given moment) could be seen as classifying small groups of groove lines into an amplitude, since they are discrete (encoded in 32 bits maximum, ~4 billions classes). Reducing the encoding size would make it easier for a model, but quality would be lost.
+
+For regression, the groove and sound could be seen as time series, and the goal would be to predict amplitude values.
+
+Also, the problem can be seen as an interpolation one : given clean needle positions, what is the best curve to connect them ? Once determined, taking the derivative would give the sound wave.
+
+If it is not possible to generate sound from images, other approaches can be taken (see Risks)
+
+Here is a list of models, their application, and their relevance to our problem:
+\begin{description}
+	\item[Convolutional Neural Network - CNN] Can find detailed and general information on a picture, used for classification. Outputs a vector of class probabilities. This can be used for ML4NR by treating the output vector as a list of amplitudes in playing order.
+	\item[Auto-encoder] Can remove noise by first finding the feature of the data while reducing it (encoding), and then expanding the feature to recreate the data (decoding). Used for image denoising, and interpolation. It can be used for this project.
+	\item[Generative Adversarial Network - GAN] Composed of two parts competing against each other : one part tries to generate realistic data while the other tries to detect real and generated data. Used for dataset generation when real data is hard to obtain. Can be used for denoising. May apply in this project.
+	\item[Residual Network - ResNet] Very deep network of convolutional layers (up to 150). The idea is to connect the input of a layer to the next layer, so they can learn by seeing processed and unprocessed data. Used for classification. Can be used here.
+	\item[Recurrent Neural Network - RNN] Simple neural network, but the output of a layer is fed back to a previous layer. This allows it to learn from past values, and is good for time series. Used for regression. Can be used here.
+	\item[Long Short-Term Memory - LSTM] Same idea as recurrent neural networks, it uses previous feature values to find the present output. The difference is the possibility to have as many previous data as needed. A special neuron is responsible for telling when a previous feature value is still relevant or not. Very good for time series, can be applied here.   
+\end{description}
+By tweaking the problem, all those models could be used. It is complicated to see what would be best, as no similar project were found. For this prototype, the first try is with a CNN model, like the one used in prototype 0. The second try is with a LSTM model.
+
+\subsection{Risks}
+If the model is really bad at finding the correct sound from the image, other methods could be used :
+\begin{itemize}
+\item Cleaning the image of its noise with an auto-encoder.
+\item Finding the needle positions at successive time steps, and using the derivative to obtain the amplitude
+\item Cleaning the generated audio of its noise
+\end{itemize}
+
+\subsection{Weaver plugins}
+Weaver consists of more than 150 plugins, each doing a specific process. They are divided into categories : Load, Image, Track, Process, Save, Other.
+
+All plugins inherit from the AbstractPlugin class, containing data useful to most of plugins. They are chained automatically when placed in the pipeline. 
+\subsection{Dataset generation plugin}
+A machine learning dataset needs to be as diverse as possible, in order to avoid over-fitting. A plugin able to generate a random dataset would be ideal.
+
+Following the example pipeline for simple sine grooves given by Mr. Cornell %add in appendix
+, a new plugin is implemented with these ideas in mind:
+\begin{itemize}
+	\item The images should be random in an acceptable range.
+	\item It should be possible to generate systematically all combinations if desired.
+	\item The dataset size can become quite big, an estimation of the size would be useful.
+\end{itemize}
+
+All sine groove parameters can be randomized. The most intuitive way to do it is to take minimum, maximum and step for each parameter. Setting minimum = maximum will generate only this value for this parameter.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/datasetplugin.png}
+	\caption{Dataset generation plugin interface}
+	\label{dsplugin}
+\end{figure}
+
+The file name contains the values used for each parameter. Then are encoded as the parameter's first letter and the value. Ex :
+
+f1875\_a10\_e3\_b12\_g160\_h80000.tif
+
+Using Weaver loop plugin, the corresponding sound of each image is generated.
+\subsection{Dataset}
+Here is what a generated groove looks like :
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/example_groove.png}
+	\caption{Generated groove, frequency=2760}
+	\label{gengroove}
+\end{figure}
+The first idea is to generate randomized grooves so model inputs are as diverse as possible. However, the audio file generated from a random groove can sometimes be wrong. The algorithm used by Weaver plugins needs initial values close to the actual ones, and it's quite complicated with a random dataset. Furthermore, even the "correct" audio files contain some high frequency noise, due to the algorithm imperfection. We decide to generate the audio data from the code and not Weaver for this prototype.
+
+The groove and image properties are fixed, for an easier manipulation of data for training. Only the frequency is randomized.
+\begin{table}[]
+	\begin{tabular}{lllll}
+		& Value      &  &  &  \\
+		Width        & 204        &  &  &  \\
+		Height       & 80'000     &  &  &  \\
+		Frequency    & 20 - 5'000 &  &  &  \\
+		Amplitude    & 10         &  &  &  \\
+		Edge width   & 3          &  &  &  \\
+		Groove width & 160        &  &  &  \\
+		Bottom width & 12         &  &  & 
+	\end{tabular}
+\end{table}
+
+In order to keep some space, we generate around 100 images.
+
+So ideally, the input is a 204 x 80'000 8-bits image, and the output is a 104KHz 16-bits/channel stereo wave file.
+\subsection{Model implementation}
+\subsubsection{Version 1}
+The first intuition is to use what we already know from prototype 0: the CNN layer.
+
+The input is a 80'000 by 204 8-bits gray-scale groove image, and the goal is to find the WAV data of 80'000 samplings.
+The audio file has two channels, even if most of the time they have the same value. Each channel is encoded in 16-bits. We only search for one channel and copy it for the second.
+
+The first layer has to accept one groove image as input, as they are too heavy to all be loaded in memory. For each epoch, we loop through all images, feeding them one at a time to the model for fitting. The model is saved every epoch, because Google Colab, used for the implementations of this project, makes sessions expire after a fixed time.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/model_v1.png}
+	\caption{Architecture of the convolutional network}
+	\label{archiv1}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../images/model_v1_params.png}
+	\caption{Parameters count of the model}
+	\label{paramv1}
+\end{figure}
+
+The convolutions kernel are 10x10 because 10 rows of data should help find the amplitude at a certain point, and 10 columns cover the groove edge. The output size of 32 is what is typically used in examples. Padding keeps the image at the same size.
+
+A good optimizer is ADAM, who uses gradient descent. All parameters are left with default values. Mean square error (MSE) seems to be a perfect loss function for our problem, as the further we are from the ground-truth, the worse it is. Mean absolute error (MAE) can also provide insight on the results.
+
+\subsubsection{Version 1 results}
+After training for 10 epochs over 94 images, the best results are obtained by images whose audio contains a lot of 0. Their loss function score is however still horrible : in the order of 10'000s to 100'000s for MSE, 1000s for MAE. Images whose sounds have a lot of non-zero score in the order of 10'000'000s for MSE, and 10'000s for MAE.
+
+Seeing that the loss scores increases over time, we know there is a problem with our parameters and/or inputs. 
+
+Since it is a first shot at this problem through intuition, we decided to abandon this method and to search a better model.
+\subsubsection{Version 2}
+The first version being unsuccessful, we searched further in the current SOTA for regression problem linked to time series. A neural network that stood out was Long Short-Term Memory (LSTM).
+
+LSTM are composed of neurons able to retain information from previous steps. They use them to predict values, but if an input from a previous step is no longer useful, it's able to forget it.
+
+In order to use it with Keras, the inputs needs to be reshaped in three dimensions. The first is blocks of multiple rows. The second is the rows of features for one prediction, also called time steps. The third is the features.
+
+
+Since it already is a full Neural Network (it generates a node for each feature at each time step), we decided to use only one of them for now. It will take one block of rows as input at a time, and output the amplitude for both channel at that time step.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/model_v2.png}
+	\caption{Architecture of the LSTM network}
+	\label{archiv2}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../images/model_v2_params.png}
+	\caption{Parameters count of the model}
+	\label{paramv2}
+\end{figure}
+
+This model takes a 5 x 204 image as input, and gives 1 x 2 as output (the amplitude for both channels).
+
+For the loss function and optimizer, we will keep the same as version 1.
+
+\subsubsection{Version 2 - results}
+After training for 10 epochs over 94 images, the results are in the same range as version 1. It seems the problem comes from the learning rate and the features, rather than the model itself.
+
+\subsubsection{Version 3}
+With version 2 results, we now know that the features are bad when used directly.
+
+Following the advice of Mr. Hennebert, we normalize the inputs and target to obtain a nicer range. Each pixel of the groove image is normalized between 0 and 1. Each audio amplitude is normalized between -1 and 1.
+
+Furthermore we use the CNN again, as it is easier to understand and fine tune. However, the input will have the same shape as in version 2 : a few rows of all features as input, and the amplitude as output. Since the sound should be in mono, only one output value is needed.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/input.jpg}
+	\caption{Window used to predict the amplitude}
+	\label{input_v3}
+\end{figure}
+
+The blue rectangle is an example of input given to the model. The red rectangle is an example of convolutional kernel.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{../images/model_v3.png}
+	\caption{Architecture of the CNN with window}
+	\label{archiv3}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../images/model_v3_params.png}
+	\caption{Parameters count of the model}
+	\label{paramv3}
+\end{figure}
+
+Each image is split into overlapping blocks of 9 rows and 204 features. They are then fed to the model, in which each convolutional layer tries to find hidden features in 5x10 matrices. 
+
+For the two previous versions there were no activation layer, because the output wasn't bound. Here, since we are searching for an amplitude between -1 and 1, the tanh activation function seems reasonable.
+
+The dropout layers make it harder to overfit.
+
+The optimizer is also different : we use RMSprop, whose key advantage is the automatic adaptation of its learning rate. This avoids loss function triggering long jumps and divergence. The parameters used are learning_rate=1e-4, decay=1e-6.
+
+For validation, 15\% of the blocks of one image are taken out of training, and then used for scoring. Furthermore, after 25 images, a real sound generation is made from unseen images and saved (no scoring). This allows us to hear the results rather than comparing numbers.
+
+\subsubsection{Version 3 - results}
+This model seemed to have good results from the beginning, so everything was put in place to record the training : MSE and MAE scores for train and test images, weights saving, audio file registering.
+
+Here are the MSE and MAE scores :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/res_plot_v4.png}
+	\caption{MSE and MAE for train and test scores}
+	\label{scoresv3}
+\end{figure}
+
+We can see spikes. Those corresponds to low frequency grooves, where the lateral movement is really slow. We can see why the model has a hard time with them.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{../images/low_freq.png}
+	\caption{Groove of frequency 25}
+	\label{lowfreq}
+\end{figure}
+
+A prediction of a low frequency groove has less amplitude, but the frequency itself seems to be correct.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../images/pred_60.png}
+	\caption{Top : perfect sine wave of 60Hz / Bottom : predicted wave from groove}
+	\label{pred60}
+\end{figure}
+
+Expanding the range after the generation could make it better.
+
+As the frequency increases, the prediction is more spot on, and the audio sounds closer to the truth. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../images/pred_2175.png}
+	\caption{Top : perfect sine wave of 2175Hz / Bottom : predicted wave from groove}
+	\label{pred2175}
+\end{figure}
+
+It is however very sharp, and analyzing the spectrum shows that a lot of higher frequencies are involved (mostly harmonics of our desired frequency).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/spectrometer_2175_v4.png}
+	\caption{Spectrum of the generated audio for a 2175Hz groove}
+	\label{spectrum2175}
+\end{figure}
+
 \bibliographystyle{unsrt}
 \bibliography{cdc}
 \includepdf[pages={3}]{planV1.pdf}
