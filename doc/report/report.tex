@@ -1,5 +1,6 @@
 \documentclass[12pt, twoside]{article}
-\usepackage[hmargin=1.25in, vmargin=1.1in]{geometry}
+%\usepackage[hmargin=1.25in, vmargin=1.1in]{geometry}
+\usepackage{geometry}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -29,7 +30,7 @@
 
 %--------------- Variables à modifier à chaque rendu ---------------
 \title{Report}
-\newcommand{\daterendu}{07/11/2019}
+\newcommand{\daterendu}{09/08/2019}
 %-------------------------------------------------------------------
 
 \makeatletter\let\Title\@title\makeatother
@@ -158,7 +159,7 @@ IRENE's 2D camera horizontal resolution is 4096 pixels. To obtain a good image q
 
 So, each shellac disc is imaged with 8 x (15 to 30) pictures of 10,000 x 4096 pixels. All these pictures are in bitmap format and in gray scale.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.4\textwidth]{../images/Vaya-52212c.png}
 	\caption{One image of the shellac disc of Vaya Con Dios, by Les Paul and Mary Ford (source : lab's collection)}
@@ -257,7 +258,7 @@ TensorFlow is a Python and C API developed for machine learning\cite{tf}. It fac
 Keras is a high-level API that can use TensorFlow as a basis for machine learning and neural networks\cite{keras}. It makes it easier for developers to implement deep neural networks (DNN) by having layer types already ready to use with ways to organize them. It also offers a lot of data manipulation for pre- and post-processing.
 \subsection{CIFAR-10}
 CIFAR-10 is a public dataset widely used for machine learning training and evaluation\cite{cifar}. It consists of 60,000 color images belonging to 10 classes (animals and vehicles). The goal is to be able to find the right class for a given image.
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{../images/cifar.png}
 	\caption{Example of images in the CIFAR-10 Dataset (source : \cite{cifar})}
@@ -341,7 +342,7 @@ Following the example pipeline for simple sine grooves given by Mr. Cornell %add
 
 All sine groove parameters can be randomized. The most intuitive way to do it is to take minimum, maximum and step for each parameter. Setting minimum = maximum will generate only this value for this parameter.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{../images/datasetplugin.png}
 	\caption{Dataset generation plugin interface}
@@ -355,7 +356,7 @@ f1875\_a10\_e3\_b12\_g160\_h80000.tif
 Using Weaver loop plugin, the corresponding sound of each image is generated.
 \subsection{Dataset}
 Here is what a generated groove looks like :
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{../images/example_groove.png}
 	\caption{Generated groove, frequency=2760}
@@ -364,7 +365,7 @@ Here is what a generated groove looks like :
 The first idea is to generate randomized grooves so model inputs are as diverse as possible. However, the audio file generated from a random groove can sometimes be wrong. The algorithm used by Weaver plugins needs initial values close to the actual ones, and it's quite complicated with a random dataset. Furthermore, even the "correct" audio files contain some high frequency noise, due to the algorithm imperfection. We decide to generate the audio data from the code and not Weaver for this prototype.
 
 The groove and image properties are fixed, for an easier manipulation of data for training. Only the frequency is randomized.
-\begin{table}[H]
+\begin{table}
 	\begin{tabular}{|r|l|lll}
 		\cline{1-2}
 		Width        & 204        &  &  &  \\ \cline{1-2}
@@ -389,14 +390,14 @@ The audio file has two channels, even if most of the time they have the same val
 
 The first layer has to accept one groove image as input, as they are too heavy to all be loaded in memory. For each epoch, we loop through all images, feeding them one at a time to the model for fitting. The model is saved every epoch, because Google Colab, used for the implementations of this project, makes sessions expire after a fixed time.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{../images/model_v1.png}
 	\caption{Architecture of the convolutional network}
 	\label{archiv1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{../images/model_v1_params.png}
 	\caption{Parameters count of the model}
@@ -423,14 +424,14 @@ In order to use it with Keras, the inputs needs to be reshaped in three dimensio
 
 Since it already is a full Neural Network (it generates a node for each feature at each time step), we decided to use only one of them for now. It will take one block of rows as input at a time, and output the amplitude for both channel at that time step.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{../images/model_v2.png}
 	\caption{Architecture of the LSTM network}
 	\label{archiv2}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{../images/model_v2_params.png}
 	\caption{Parameters count of the model}
@@ -447,11 +448,11 @@ After training for 10 epochs over 94 images, the results are in the same range a
 \subsubsection{Version 3}
 With version 2 results, we now know that the features are bad when used directly.
 
-Following the advice of Mr. Hennebert, we normalize the inputs and target to obtain a nicer range. Each pixel of the groove image is normalized between 0 and 1. Each audio amplitude is normalized between -1 and 1.
+Following the advice of Mr. Hennebert, we normalize the inputs and target to obtain a nicer range. Each pixel of the groove image is normalized between 0 and 1. Each audio amplitude goal is normalized between -1 and 1.
 
-Furthermore we use the CNN again, as it is easier to understand and fine tune. However, the input will have the same shape as in version 2 : a few rows of all features as input, and the amplitude as output. Since the sound should be in mono, only one output value is needed.
+Furthermore we use the CNN again, as it is easier to understand and fine tune. However, the input will have the same shape as in version 2 : a few rows of all pixels as input, and the amplitude of as output. Since the sound should be in mono, only one output value is needed.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{../images/input.jpg}
 	\caption{Window used to predict the amplitude}
@@ -460,14 +461,14 @@ Furthermore we use the CNN again, as it is easier to understand and fine tune. H
 
 The blue rectangle is an example of input given to the model. The red rectangle is an example of convolutional kernel.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.3\textwidth]{../images/model_v3.png}
 	\caption{Architecture of the CNN with window}
 	\label{archiv3}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{../images/model_v3_params.png}
 	\caption{Parameters count of the model}
@@ -480,7 +481,7 @@ For the two previous versions there were no activation layer, because the output
 
 The dropout layers make it harder to overfit.
 
-The optimizer is also different : we use RMSprop, whose key advantage is the automatic adaptation of its learning rate. This avoids loss function triggering long jumps and divergence. The parameters used are learning_rate=1e-4, decay=1e-6.
+The optimizer is also different : we use RMSprop, whose key advantage is the automatic adaptation of its learning rate. This avoids loss function triggering long jumps and divergence. The parameters used are learning\_rate=1e-4, decay=1e-6.
 
 For validation, 15\% of the blocks of one image are taken out of training, and then used for scoring. Furthermore, after 25 images, a real sound generation is made from unseen images and saved (no scoring). This allows us to hear the results rather than comparing numbers.
 
@@ -489,7 +490,7 @@ This model seemed to have good results from the beginning, so everything was put
 
 Here are the MSE and MAE scores :
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{../images/res_plot_v4.png}
 	\caption{MSE and MAE for train and test scores}
@@ -498,7 +499,7 @@ Here are the MSE and MAE scores :
 
 We can see spikes. Those corresponds to low frequency grooves, where the lateral movement is really slow. We can see why the model has a hard time with them.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.3\textwidth]{../images/low_freq.png}
 	\caption{Groove of frequency 25}
@@ -507,7 +508,7 @@ We can see spikes. Those corresponds to low frequency grooves, where the lateral
 
 A prediction of a low frequency groove has less amplitude, but the frequency itself seems to be correct.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=1.0\textwidth]{../images/pred_60.png}
 	\caption{Top : perfect sine wave of 60Hz / Bottom : predicted wave from groove}
@@ -518,7 +519,7 @@ Expanding the range after the generation could make it better.
 
 As the frequency increases, the prediction is more spot on, and the audio sounds closer to the truth. 
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=1.0\textwidth]{../images/pred_2175.png}
 	\caption{Top : perfect sine wave of 2175Hz / Bottom : predicted wave from groove}
@@ -527,12 +528,246 @@ As the frequency increases, the prediction is more spot on, and the audio sounds
 
 It is however very sharp, and analyzing the spectrum shows that a lot of higher frequencies are involved (mostly harmonics of our desired frequency).
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{../images/spectrometer_2175_v4.png}
 	\caption{Spectrum of the generated audio for a 2175Hz groove}
 	\label{spectrum2175}
 \end{figure}
+
+\subsubsection{Version 4}
+In order to improve our results, fine-tuning all hyper-parameters is necessary. The success or failure of neural networks depends on it, as a bad combination could make the model and results diverge instead of converging.
+
+The hyper-parameters of our model are :
+\begin{description}
+	\item[Batch size] Number of blocks given to train the network before updating the weights. Mainly depends on the memory available
+	\item[Time steps] Number of rows of the sliding window. Too few and it will be hard to differentiate slopes of the groove. Too many and the model will take a long time to find what is useful.
+	\item[Predictions] Number of amplitude points to find in one block. There may be a link between following amplitudes that the model can use to be more accurate.
+	\item[Convolution filter shape] Convolution kernel size. Small filters can find smaller features, big ones can detect more general elements. Generally 3x3 in CNN.
+	\item[Max pooling filter shape] Size of the kernel in which we keep only the maximum. Generally 2x2 in CNN.
+	\item[Dropout rate] Proportion of neuron connections randomly cut to avoid over-fitting and accelerate learning time.
+	\item[Activation function] Function that will collapse values on a certain range. \texttt{tanh} gives values between -1 and 1, \texttt{ReLu} between 0 and infinity.
+	\item[Optimizer] Algorithm used to update the network weights. There exists a lot of them, with different properties and applications. Most of them need a learning rate and a decay rate.
+	\item[Learning rate] Strength of the weight updates when searching the minimum loss. Too high and the values could diverge, too low and the learning will take a long time to find the minimum. 
+	\item[Decay rate] Reduction of learning rate at every step, so it is less likely to diverge.
+	\item[Loss function] Value calculated between predicted value and goal. This value is what the optimizer tries to minimize.
+\end{description}
+
+This makes a lot of parameters, and testing all possible combinations is impossible. Some of them seem to be more linked than others, and using intuition, are grouped like that :
+\begin{enumerate}
+	\item Time steps, predictions, and convolutional filter shape
+	\item Max pooling shape and dropout
+	\item Optimizer, learning rate, and decay rate
+\end{enumerate}
+Batch size can be fixed, as it should not have too much of an influence (32 is generally used). Loss function can also be fixed. For regression problem. a mean square error seems perfect.
+
+Since the dataset is not noisy like the actual grooves, some of the parameters found here may not be ideal later. For this reason, the models are not trained for too long. One pass over all images should be enough to find the good combinations.
+
+The input dataset is 78 images, each of them decomposed in up to 79'996 blocks using a sliding window. 15\% of them are taken away for validation, resulting in up to more than 5'300'000 blocks for training one epoch. The model trains on each block individually to find a certain number of predictions per block. This dataset should be big enough to have interesting results after one pass only.
+
+In table \ref{hp1}, values considered for the first group of hyper-parameters can be found.
+\begin{table}[H]
+	\begin{tabular}{|r|l|l|l|l}
+		\cline{1-4}
+		Hyper-parameter				& Min	& Max 					& Step 	& \\ \cline{1-4}
+		Time steps  				& 5    	& 9   					& 2    	& \\ \cline{1-4}
+		Predictions 				& 1    	& Time steps  			& 2 	& \\ \cline{1-4}
+		Convolution filter height  	& 3 	& Time steps / 2 + 0.5 	& 2 	& \\ \cline{1-4}
+		Convolution filter width  	& 3 	& 9 					& 2 	& \\ \cline{1-4}
+		
+	\end{tabular}
+	\caption{Range of values for hyper-parameters fine tuning}
+	\label{hp1}
+\end{table}
+
+This already results in 104 possible combinations. In order not to lose too much time, only the 50 first combinations will be trained. If the best results are obtained with parameters values close to those that aren't trained yet, the remaining combinations will also be trained. However, if the best models are the ones with small parameter values, there is probably no need to train models with bigger values.
+
+The other hyper-parameters seem more dependent on whether the dataset is noised or not, so they will be fine-tuned in prototype 2. 
+\subsubsection{Version 4 results}
+For result evaluation, every model tries to predict the audio wave of the 18 test images. The mean square errors of each prediction are averaged together to obtain the global test result.
+
+The best results, after training over 78 images of grooves with variable frequency, are obtained by the first model tested (results of best three models in figure \ref{resp1v4}).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/resp1v4.png}
+	\caption{Top three results obtained by different combinations}
+	\label{resp1v4}
+\end{figure}
+
+All three models have small hyper-parameters values : all have time steps = 5, predictions = 1, and convolution filter height = 3. The only difference between them is convolution filter width, which is in order 3, 7 and 9.
+
+All the other results can be found in the annex. TODO add ref
+
+It can be assumed that there is no need to train models with bigger parameter values.
+
+In table \ref{hpm1}, you can find the values used by the best model.
+
+\begin{table}
+	\begin{tabular}{|r|l|lll}
+		\cline{1-2}
+		Time steps        & 5        &  &  &  \\ \cline{1-2}
+		Predictions       & 1     &  &  &  \\ \cline{1-2}
+		Convolution filter    & 3x3 &  &  &  \\ \cline{1-2}
+		Max pooling filter    & 2x2        &  &  &  \\ \cline{1-2}
+		Dropout rate   & 0.25 (firsts) and 0.5 (last)          &  &  &  \\ \cline{1-2}
+		Activation function & ReLu (firsts) and tanh (last)        &  &  &  \\ \cline{1-2}
+		Optimizer & RMSprop         &  &  &  \\ \cline{1-2}
+		Learning rate & 1e-4         &  &  &  \\ \cline{1-2}
+		Decay rate & 1e-6         &  &  &  \\ \cline{1-2}
+	\end{tabular}
+	\caption{Hyper-parameters used for best results}
+	\label{hpm1}
+\end{table}
+
+The model architecture can be found in the annex. TODO add ref
+
+For reference, the goal and predicted signals can be seen in figure \ref{predm1}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/predm1.png}
+	\caption{Top : goal signal of 2175Hz. Bottom : predicted signal}
+	\label{predm1}
+\end{figure}
+Compared to the previous prediction of the same groove (figure \ref{pred2175}), this one looks better, especially at the peaks.
+
+The spectrum (figure \ref{spectrumm1}) also shows a big difference between the main frequency and the overtones, indicating a reduced background noise
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/spectrum_m1.png}
+	\caption{Spectrum of the predicted audio wave}
+	\label{spectrumm1}
+\end{figure}
+\section{Prototype 2}
+In this prototype, the goal is to train a model on noisy images of single frequency grooves and make it predict a perfect sine wave.
+\subsection{Noisy groove images}
+As can be seen in figure \ref{vayabis}, the actual disc images are noisy. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{../images/Vaya-52212c.png}
+	\caption{One image of the shellac disc of Vaya Con Dios, by Les Paul and Mary Ford (source : lab's collection)}
+	\label{vayabis}
+\end{figure}
+That noise can be decomposed in different type of noise :
+\begin{itemize}
+	\item A light Gaussian noise that gets heavier on the groove edges, caused by dust and texture.
+	\item Thin scratches that are seen as black.
+	\item Bigger damage that is also seen as black.
+\end{itemize}
+All those makes the task of finding the sound more difficult, it is therefore important to simulate them for model training.
+\subsection{Artificially noised dataset}
+Since a dataset of grooves and their output is already available, a simple program can be used to noise them and generate a new dataset. Those noised grooves should look as much as possible as the actual disc images.
+
+The Gaussian noise can be added easily on the perfect groove image. The black part should stay as dark as possible, and the white part should have visible deterioration. Knowing that the pixel values are between 0 and 255, a Gaussian noise of average -100 and standard deviation of 50 is clearly visible on the white parts and not so much on the black ones.
+
+For the scratches, thin long black rectangles are generated randomly and placed randomly across the image.
+
+For the big damage, the same is done with bigger black rectangles, but not as many as scratches.
+
+The result of artificial noising can be seen in figure \ref{cleannoisy}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{../images/cleannoisy.png}
+	\caption{Left : clean groove of 2075 Hz. Right : same groove artificially noised}
+	\label{cleannoisy}
+\end{figure}
+
+\subsection{Version 1}
+In this version, the dataset is the same as for prototype 1 (78 images for training, 18 for testing). All the images are noised once and written in static memory, so the training and testing images are the same for all models.
+
+The goal is to obtain a good prediction of the sound wave of a noisy groove image. In order to do that, further fine tuning is necessary.
+Instead of trying every combination like before, parameter values are tuned through trial and error.
+\subsubsection{Implementation}
+The first model trained is the one that obtained the best results in prototype 1.
+
+Then, fine tuning over the learning and decay rate are tried. In the first model RMSprop is used, and the values are learning = 1e-4, decay = 1e-6. However, Keras documentation suggest using default values, which are learning = 1e-3 and decay = 0. We can also try to make the decay bigger to see how it affects learning.
+
+Seeing the noised images, it seems a bigger sliding window could help find amplitude more easily when the groove edge is damaged. Big jumps in values make it faster to see if it's relevant or not to change it, so the network is tested with window height (time steps) of 5, 9, and 15.
+
+Each model is trained over a varying number of epochs, depending on the occasional crash of the connection and the time taken.
+\subsubsection{Results}
+First come the results between the different learning and decay rates. Figure \ref{resp2v1lr} shows the results of the three best model and epoch.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/resp2v1lr.png}
+	\caption{Top three results among all epochs and models where learning and decay rates are tuned}
+	\label{resp2v1lr}
+\end{figure}
+
+The model using learning rate = 1e-4 and decay rate = 1e-6 obtains the three best results. However, the results don't seem to improve over time. It can be a sign of bad values or even bad optimizer. 
+
+Next, using the default values of the RMSprop optimizer, the window height parameter is played with. Again, figure \ref{resp2v1ts} shows the results of the three best model and epoch.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/resp2v1ts.png}
+	\caption{Top three results among all epochs and models where sliding window size is tuned}
+	\label{resp2v1ts}
+\end{figure}
+
+This time, the results are a bit better. The best model is the one using a window height of 15 pixels. Our intuition proved to be right.
+\subsection{Version 2}
+In this version, a new dataset is used : groove images are now lightly randomized (groove width, edge width, bottom width), and they are noised on the fly during training. The test dataset is noised once, written in memory, and used for every model so comparisons make sense.
+
+The training dataset contains 170 images, the test 30 images. 15\% of image blocks are used for validation. This makes training for one epoch quite long (around 3 hours with our current environment). Furthermore, a good result over the test set could be obtained in the middle of an epoch. With these two arguments in mind, a modification was made to th program : it is now possible to divide the training dataset and to test results after each smaller division. This also allows to resume training in case of crash.
+
+In the previous version, the optimizer didn't seem to work correctly even with different values. In this version, other optimizers are tested : Adagrad and Adam.
+\subsubsection{Implementation}
+First, the best hyper-parameters previously found are used to train on the dynamic dataset. The same data is never seen twice, so the model should be more robust.
+
+Then, optimizers Adagrad and Adam are tested with their default values.
+
+The training dataset is divided in 10 smaller parts, and after each of them the model is tested.
+\subsubsection{Results}
+The model combining the best hyper-parameters and RMSprop optimizer trained over 6 epochs. The best results are obtained on epoch 1, showing that there is indeed a problem with the optimizer. However, it was used to make a prediction and see if the model can find the audio of a noised groove.
+
+Figure \ref{groove1530} is the noisy groove used for test (never seen during training). Figure \ref{predm4000} is the perfect wave and the predicted one. Figure \ref{spectrum4000} is the spectrum of the predicted audio wave.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{../images/groove1530.png}
+	\caption{Noisy 1530 Hz groove image used for testing}
+	\label{groove1530}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/predm4000.png}
+	\caption{Top : perfect 1530 Hz wave. Bottom : predicted wave from noisy groove image}
+	\label{predm4000}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/spectrum_m4000.png}
+	\caption{Spectrum of the predicted 1530 Hz wave}
+	\label{spectrum4000}
+\end{figure}
+The predicted wave looks thicker on the peaks. We can see that there are still overtones, however they quickly lose intensity. The predicted wave has some irregularities, but they are really small compared to the rest. It seems that even though it doesn't converge, this model is robust enough to predict a sound wave from a noisy image. TODO comparison with weaver output.
+
+The next model to test has the same hyper-parameters except for the optimizer. It uses Adam with its default rates. The best test results are obtained at epoch 2.6. This epoch weights are used to make a prediction on the same groove as before. In figure \ref{pred4004} we can see the predicted sound wave on third position, the second being the prediction using RMSprop optimizer.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/pred4004.png}
+	\caption{Top : perfect 1530 Hz wave. Middle :  predicted wave from noisy groove image with RMSprop. Bottom : predicted wave from noisy groove image with Adam}
+	\label{predm4004}
+\end{figure}
+We can see that the general shape is more similar to the perfect wave, however there are sharper errors. The spectrum (figure \ref{spectrum4004}) also shows overtones with less amplitude. It is a better result altogether.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../images/spectrum_m4004.png}
+	\caption{Spectrum of the predicted audio wave}
+	\label{spectrum4004}
+\end{figure}
+\section{Prototype 3 and 4}
+In this prototype, the goal is to train a model on the real disc groove images, and to obtain a good prediction. The first attempt is a direct transfer learning from prototype 2. If it is not satisfying, a new model is trained
+\subsection{Dataset formatting}
+Weaver tracking -> center of sliding window
+Writting lots of small images in memory
+Original tape recording -> audio wave goal
+\subsection{Implementation}
+\subsection{Results}
+
+\section{Conclusion}
+\subsection{Personal opinion}
+\subsection{Future work}
 
 \bibliographystyle{unsrt}
 \bibliography{cdc}
